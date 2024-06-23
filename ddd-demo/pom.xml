@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.d3framework</groupId>
+        <artifactId>base-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../base-parent/pom.xml</relativePath>
+    </parent>
+    <groupId>com.yourcompany</groupId>
+    <artifactId>ddd-demo</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <description>DDD Demo工程</description>
+    <packaging>jar</packaging>
+    <dependencies>
+        <!-- 基础数据组件 -->
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-data</artifactId>
+        </dependency>
+        <!-- 基础工具箱 -->
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-kit</artifactId>
+        </dependency>
+        <!--基础监控组件-->
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-monitor</artifactId>
+        </dependency>
+        <!-- 基础WEB组件 -->
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-web</artifactId>
+        </dependency>
+        <!--注册中心客户端-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--配置中心客户端-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <!-- MySQL连接 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- Maven跳过发布 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

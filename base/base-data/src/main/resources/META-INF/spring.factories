@@ -1,0 +1,8 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dddframework.data.config.BaseDataConfig,\
+com.dddframework.data.typehandlers.StringsTypeHandler,\
+com.dddframework.data.typehandlers.LongsTypeHandler,\
+com.dddframework.data.typehandlers.DoublesTypeHandler,\
+com.dddframework.data.typehandlers.IntegersTypeHandler,\
+com.dddframework.data.typehandlers.JSONObjectTypeHandler,\
+com.dddframework.data.typehandlers.JSONArrayTypeHandler

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.d3framework</groupId>
+        <artifactId>d3-boot</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>base-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>业务父工程组件</description>
+
+    <!--公共依赖，放最最最常用的依赖包-->
+    <dependencies>
+        <!-- 基础核心组件 -->
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!--公共依赖管理-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.d3framework</groupId>
+                <artifactId>base-bom</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--构建插件-->
+    <build>
+        <plugins>
+            <!-- GIT代码信息插件 -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dddframework.web.interceptor.LogWebInterceptor,\
+com.dddframework.web.interceptor.ContextWebInterceptor,\
+com.dddframework.web.config.BaseWebConfig

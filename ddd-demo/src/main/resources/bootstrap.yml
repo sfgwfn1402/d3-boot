@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ddd-demo
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      config:
+        file-extension: yml
+        shared-configs:
+          - data-id: application-${spring.profiles.active}.yml
+            refresh: true
+  profiles:
+    active: dev
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/oauth-auth-server?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.alibaba.nacos.client.config.impl: WARN
+
+base-monitor:
+  log:
+    # 应用日志监控开关
+    enable: true
+    qiwei:
+      # 企微机器人KEY，log.error会告警到这个机器人所在的群聊
+      key:
+
+base-auth:
+  enable: true
+  # 被注解@BaseOAuth的Controller接口认证令牌配置
+  bearer-tokens: xxx

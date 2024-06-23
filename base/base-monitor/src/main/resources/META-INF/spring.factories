@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dddframework.monitor.infras.config.BaseMonitorConfig,\
+com.dddframework.monitor.api.HealthController,\
+com.dddframework.monitor.application.service.CodeVersionService
