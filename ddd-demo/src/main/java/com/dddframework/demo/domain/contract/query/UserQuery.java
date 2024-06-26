@@ -28,11 +28,11 @@ public class UserQuery extends Query {
     // 关联用户ID
     private String relateUserId;
     // 客户昵称-模糊
-    private String nicknameLike;
     // 姓名-模糊
     private String realNameLike;
     // 性别 1.男 2.女 0.未知
     private String sex;
+    private String nicknameLike;
     // 手机号
     private String phone;
     // 手机号-模糊

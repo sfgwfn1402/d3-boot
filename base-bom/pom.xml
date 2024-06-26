@@ -18,22 +18,41 @@
         <spring.boot.version>2.3.12.RELEASE</spring.boot.version>
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
         <spring.cloud.alibaba.version>2.2.9.RELEASE</spring.cloud.alibaba.version>
+        <elasticsearch.version>7.11.2</elasticsearch.version>
     </properties>
 
     <!-- 统一依赖版本管理 -->
     <dependencyManagement>
 
         <dependencies>
+            <!--基础common组件-->
+            <dependency>
+                <groupId>com.d3framework</groupId>
+                <artifactId>base-common</artifactId>
+                <version>${base.version}</version>
+            </dependency>
             <!--基础核心组件-->
             <dependency>
                 <groupId>com.d3framework</groupId>
                 <artifactId>base-core</artifactId>
                 <version>${base.version}</version>
             </dependency>
+            <!--基础核心elasticsearch组件-->
+            <dependency>
+                <groupId>com.d3framework</groupId>
+                <artifactId>base-core-elasticsearch</artifactId>
+                <version>${base.version}</version>
+            </dependency>
             <!--基础数据组件-->
             <dependency>
                 <groupId>com.d3framework</groupId>
                 <artifactId>base-data</artifactId>
+                <version>${base.version}</version>
+            </dependency>
+            <!--基础数据ES组件-->
+            <dependency>
+                <groupId>com.d3framework</groupId>
+                <artifactId>base-data-elasticsearch</artifactId>
                 <version>${base.version}</version>
             </dependency>
             <!--基础MQ组件-->
@@ -164,6 +183,11 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.2</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
@@ -402,6 +426,27 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>1.29</version>
+            </dependency>
+            <!--fastjson json-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.75</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>${elasticsearch.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

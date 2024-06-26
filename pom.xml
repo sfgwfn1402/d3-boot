@@ -9,7 +9,7 @@
         <module>base-bom</module>
         <module>base-parent</module>
         <module>ddd-demo</module>
-<!--        <module>base-security</module>-->
+        <!--        <module>base-security</module>-->
     </modules>
     <version>1.0.0-SNAPSHOT</version>
     <description>d3-boot基础框架</description>
@@ -204,47 +204,47 @@
     </build>
 
     <!--TODO 重要！！！此处请替换为自己推送依赖包的私仓地址-->
-<!--    <distributionManagement>-->
-<!--        &lt;!&ndash; snapshot部署仓库 &ndash;&gt;-->
-<!--        <snapshotRepository>-->
-<!--            <id>qushiyun</id>-->
-<!--            <url>http://ip.qushiyun.com:8083/repository/maven-snapshots/</url>-->
-<!--        </snapshotRepository>-->
-<!--        &lt;!&ndash; 非snapshot部署仓库 &ndash;&gt;-->
-<!--        <repository>-->
-<!--            <id>qushiyun</id>-->
-<!--            <url>http://ip.qushiyun.com:8083/repository/maven-releases/</url>-->
-<!--        </repository>-->
-<!--    </distributionManagement>-->
+    <distributionManagement>
+        <!-- snapshot部署仓库 -->
+        <snapshotRepository>
+            <id>qushiyun</id>
+            <url>http://ip.qushiyun.com:8083/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <!-- 非snapshot部署仓库 -->
+        <repository>
+            <id>qushiyun</id>
+            <url>http://ip.qushiyun.com:8083/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 
     <!--TODO 重要！！！此处请替换为自己拉取依赖包的私仓地址-->
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>qushiyun</id>-->
-<!--            <url>http://ip.qushiyun.com:8083/repository/maven-public/</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>aliyun</id>-->
-<!--            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <repositories>
+        <repository>
+            <id>qushiyun</id>
+            <url>http://ip.qushiyun.com:8083/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>aliyun</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 
-<!--    <pluginRepositories>-->
-<!--        <pluginRepository>-->
-<!--            <id>central2</id>-->
-<!--            <url>https://maven.aliyun.com/nexus/content/groups/public</url>-->
-<!--            <snapshots>-->
-<!--                <enabled>false</enabled>-->
-<!--            </snapshots>-->
-<!--        </pluginRepository>-->
-<!--        <pluginRepository>-->
-<!--            <id>snapshots</id>-->
-<!--            <url>https://maven.aliyun.com/nexus/content/groups/public</url>-->
-<!--            <releases>-->
-<!--                <enabled>false</enabled>-->
-<!--            </releases>-->
-<!--        </pluginRepository>-->
-<!--    </pluginRepositories>-->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central2</id>
+            <url>https://maven.aliyun.com/nexus/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>snapshots</id>
+            <url>https://maven.aliyun.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
     <!-- settings.xml配置如下：username=私仓用户名，password=私仓密码
     <servers>
         <server>

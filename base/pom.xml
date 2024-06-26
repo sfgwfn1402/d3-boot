@@ -8,8 +8,11 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modules>
+        <module>base-common</module>
         <module>base-core</module>
+        <module>base-core-elasticsearch</module>
         <module>base-data</module>
+        <module>base-data-elasticsearch</module>
         <module>base-mq</module>
         <module>base-kit</module>
         <module>base-monitor</module>

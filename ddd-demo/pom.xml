@@ -20,6 +20,11 @@
             <groupId>com.d3framework</groupId>
             <artifactId>base-data</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-data-elasticsearch</artifactId>
+        </dependency>
+
         <!-- 基础工具箱 -->
         <dependency>
             <groupId>com.d3framework</groupId>

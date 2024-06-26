@@ -1,7 +1,7 @@
 package com.dddframework.demo.infras.repository.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dddframework.data.annotation.BizKey;
+import com.dddframework.data.elasticsearch.annotation.BizKey;
 import lombok.Data;
 
 /**
