@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends Model {
+public class UserModel extends Model {
     private String id;
     private String tenantId;
     private LocalDateTime createTime;
@@ -46,6 +46,6 @@ public class User extends Model {
     private List<Object> fileValues;
 
     public static UserRepository repository() {
-        return BaseRepository.of(User.class);
+        return BaseRepository.of(UserModel.class);
     }
 }

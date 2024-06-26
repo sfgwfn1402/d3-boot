@@ -1,5 +1,7 @@
 package com.dddframework.core.elasticsearch.contract;
 
+import org.elasticsearch.action.index.IndexResponse;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +19,23 @@ public class Model implements Serializable {
 
     /**
      * 创建索引
+     *
      * @param map
-     * @return
      * @param <M>
+     * @return
      */
     public <M extends Map<String, Object>> boolean createIndex(M map) {
         return BaseRepository.of(this.getClass()).createIndex(this, map);
     }
 
-    public boolean save() {
-        return BaseRepository.of(this.getClass()).save(this);
+    /**
+     * 保存数据-随机生成数据ID
+     *
+     * @param index     索引
+     * @param dataValue 数据内容
+     */
+    public IndexResponse save(String index) {
+        return BaseRepository.of(this.getClass()).save(index, this);
     }
 
     public boolean update() {

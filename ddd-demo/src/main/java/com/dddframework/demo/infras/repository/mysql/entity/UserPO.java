@@ -1,4 +1,4 @@
-package com.dddframework.demo.infras.repository.entity;
+package com.dddframework.demo.infras.repository.mysql.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dddframework.data.elasticsearch.annotation.BizKey;

@@ -1,7 +1,7 @@
 package com.dddframework.demo.application.service;
 
 import com.dddframework.core.utils.BizAssert;
-import com.dddframework.demo.domain.user.model.User;
+import com.dddframework.demo.domain.user.model.UserModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,9 +13,9 @@ public class UserAppService {
      * @param user
      * @return
      */
-    public void modify(User user) {
-        User existUser = User.repository().get(user.getId());
+    public void modify(UserModel user) {
+        UserModel existUser = UserModel.repository().get(user.getId());
         BizAssert.notNull(existUser);
-        User.builder().id(user.getId()).build().update();
+        UserModel.builder().id(user.getId()).build().update();
     }
 }

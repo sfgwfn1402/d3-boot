@@ -5,7 +5,7 @@ import com.dddframework.core.contract.constant.ContextConstants;
 import com.dddframework.core.utils.BizAssert;
 import com.dddframework.demo.application.service.UserAppService;
 import com.dddframework.demo.domain.contract.command.UserRegisterCommand;
-import com.dddframework.demo.domain.user.model.User;
+import com.dddframework.demo.domain.user.model.UserModel;
 import com.dddframework.demo.domain.user.service.UserService;
 import com.dddframework.web.api.AggregateController;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class ClientController implements AggregateController {
      * @return
      */
     @PostMapping("/user/register")
-    public User register(@Valid @RequestBody UserRegisterCommand command) {
+    public UserModel register(@Valid @RequestBody UserRegisterCommand command) {
         return userService.register(command);
     }
 
@@ -44,7 +44,7 @@ public class ClientController implements AggregateController {
      * @return
      */
     @PostMapping("/user/modify")
-    public void modify(@RequestBody User user) {
+    public void modify(@RequestBody UserModel user) {
         BizAssert.notBlank(user.getId(), "ID不能为空");
         user.setRelateUserId(ThreadContext.get(ContextConstants.USER_ID));
         userAppService.modify(user);

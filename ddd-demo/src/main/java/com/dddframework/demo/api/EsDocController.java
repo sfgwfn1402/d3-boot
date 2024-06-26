@@ -4,10 +4,12 @@ import com.dddframework.core.context.ThreadContext;
 import com.dddframework.core.contract.constant.ContextConstants;
 import com.dddframework.core.utils.BizAssert;
 import com.dddframework.demo.application.service.UserAppService;
+import com.dddframework.demo.domain.Index.service.EsIndexService;
+import com.dddframework.demo.domain.contract.command.EsDocUserCommand;
 import com.dddframework.demo.domain.contract.command.EsIndexCommand;
 import com.dddframework.demo.domain.contract.command.UserRegisterCommand;
+import com.dddframework.demo.domain.document.service.EsDocUserService;
 import com.dddframework.demo.domain.user.model.UserModel;
-import com.dddframework.demo.domain.Index.service.EsIndexService;
 import com.dddframework.demo.domain.user.service.UserService;
 import com.dddframework.web.api.AggregateController;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * es索引
+ * es doc controller
  */
 @RestController
-@RequestMapping({"/es_index"})
+@RequestMapping({"/es_doc"})
 @RequiredArgsConstructor
-public class EsIndexController implements AggregateController {
-    final UserAppService userAppService;
-    final UserService userService;
-    final EsIndexService esService;
+public class EsDocController implements AggregateController {
+    final EsDocUserService esService;
 
     /**
      * 创建索引
@@ -35,33 +35,10 @@ public class EsIndexController implements AggregateController {
      * @param command
      * @return
      */
-    @PostMapping("/create_index")
-    public boolean createIndex(@Valid @RequestBody EsIndexCommand command) {
-        return esService.createIndex(command);
+    @PostMapping("/save")
+    public boolean save(@Valid @RequestBody EsDocUserCommand command) {
+        return esService.save(command.getIndex(), command);
     }
 
-    /**
-     * 注册
-     *
-     * @param command
-     * @return
-     */
-    @PostMapping("/user/register")
-    public UserModel register(@Valid @RequestBody UserRegisterCommand command) {
-        return userService.register(command);
-    }
-
-    /**
-     * 修改
-     *
-     * @param user
-     * @return
-     */
-    @PostMapping("/user/modify")
-    public void modify(@RequestBody UserModel user) {
-        BizAssert.notBlank(user.getId(), "ID不能为空");
-        user.setRelateUserId(ThreadContext.get(ContextConstants.USER_ID));
-        userAppService.modify(user);
-    }
 
 }

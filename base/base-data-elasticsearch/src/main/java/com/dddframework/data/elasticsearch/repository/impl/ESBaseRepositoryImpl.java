@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Slf4j(topic = "### ES-BASE-DATA : ESBaseRepository ###")
 public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implements BaseRepository<M, Q>, Serializable {
 
@@ -95,29 +96,6 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
         // 首字母设为小写
         String modelClassName = modelClass.getSimpleName().toLowerCase().substring(0, 1) + modelClass.getSimpleName().substring(1);
         MappingKit.map("MODEL_NAME", modelClassName, modelClass);
-    }
-
-    /**
-     * 保存文档
-     *
-     * @param model
-     * @return
-     */
-    @Override
-    public boolean save(M model) {
-//        if (model.getFieldMap().isEmpty()) {
-//            log.warn("content is null");
-//            return false;
-//        }
-//        try {
-//            IndexRequest request = new IndexRequest(model.getIndex()).id(model.getDocId());
-//            request.source(model.getFieldMap(), XContentType.JSON);
-//            highLevelClient.index(request, RequestOptions.DEFAULT);
-//        } catch (IOException io) {
-//            log.error("lambdaCreateDocument Exception:{}", io.getMessage());
-//            return false;
-//        }
-        return true;
     }
 
     /**
@@ -167,7 +145,7 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
             CreateIndexRequest request = new CreateIndexRequest(index).source(builder);
             CreateIndexResponse response = highLevelClient.indices().create(request, RequestOptions.DEFAULT);
             return response.isAcknowledged();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("[ elasticsearch ] >> createIndex exception ,index:{},properties:{}", index, properties, e);
             throw new RuntimeException("[ elasticsearch ] >> createIndex exception ");
         }
@@ -214,6 +192,44 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
             //其它未知异常
             log.error("[ elasticsearch ] >> deleteIndex exception ,index:{}", index, e);
             throw new RuntimeException("[ elasticsearch ] >>  deleteIndex exception {}", e);
+        }
+    }
+
+    /**
+     * 判断文档是否存在
+     *
+     * @param index 索引
+     * @return 返回 true，表示存在
+     */
+    public boolean existsDocument(String index, String id) {
+        try {
+            GetRequest request = new GetRequest(index, id);
+            //禁用获取_source
+            request.fetchSourceContext(new FetchSourceContext(false));
+            //禁用获取存储的字段。
+            request.storedFields("_none_");
+
+            return highLevelClient.exists(request, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            log.error("[ elasticsearch ] >> get document exists exception ,index:{} ", index, e);
+            throw new RuntimeException("[ elasticsearch ] >> get document  exists exception {}", e);
+        }
+    }
+
+    /**
+     * 保存数据-随机生成数据ID
+     *
+     * @param index     索引
+     * @param dataValue 数据内容
+     */
+    public IndexResponse save(String index, M dataValue) {
+        try {
+            IndexRequest request = new IndexRequest(index);
+            request.source(JSON.toJSONString(dataValue), XContentType.JSON);
+            return highLevelClient.index(request, RequestOptions.DEFAULT);
+        } catch (Exception e) {
+            log.error("[ elasticsearch ] >> save exception ,index = {},dataValue={} ,stack={}", index, dataValue, e);
+            throw new RuntimeException("[ elasticsearch ] >> save exception {}", e);
         }
     }
 
@@ -573,43 +589,6 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
 
     }
 
-    /**
-     * 判断文档是否存在
-     *
-     * @param index 索引
-     * @return 返回 true，表示存在
-     */
-    public boolean existsDocument(String index, String id) {
-        try {
-            GetRequest request = new GetRequest(index, id);
-            //禁用获取_source
-            request.fetchSourceContext(new FetchSourceContext(false));
-            //禁用获取存储的字段。
-            request.storedFields("_none_");
-
-            return highLevelClient.exists(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            log.error("[ elasticsearch ] >> get document exists exception ,index:{} ", index, e);
-            throw new RuntimeException("[ elasticsearch ] >> get document  exists exception {}", e);
-        }
-    }
-
-    /**
-     * 保存数据-随机生成数据ID
-     *
-     * @param index     索引
-     * @param dataValue 数据内容
-     */
-    public IndexResponse save(String index, Object dataValue) {
-        try {
-            IndexRequest request = new IndexRequest(index);
-            request.source(JSON.toJSONString(dataValue), XContentType.JSON);
-            return highLevelClient.index(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            log.error("[ elasticsearch ] >> save exception ,index = {},dataValue={} ,stack={}", index, dataValue, e);
-            throw new RuntimeException("[ elasticsearch ] >> save exception {}", e);
-        }
-    }
 
     /**
      * 保存文档-自定义数据ID

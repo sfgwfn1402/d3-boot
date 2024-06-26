@@ -1,6 +1,7 @@
 package com.dddframework.core.elasticsearch.contract;
 
 import com.dddframework.core.elasticsearch.context.SpringContext;
+import org.elasticsearch.action.index.IndexResponse;
 
 import java.io.Serializable;
 import java.util.List;
@@ -45,13 +46,14 @@ public interface BaseRepository<M extends Model, Q extends Query> {
      * @return 返回 true，表示创建成功
      */
     boolean createIndex(M model, Map<String, Object> properties);
+
     /**
-     * 保存
+     * 保存数据-随机生成数据ID
      *
-     * @return
-     * @query model
+     * @param index     索引
+     * @param dataValue 数据内容
      */
-    boolean save(M model);
+    IndexResponse save(String index, M dataValue);
 
     /**
      * 批量保存

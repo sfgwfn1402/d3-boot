@@ -5,7 +5,7 @@ import com.dddframework.core.utils.BeanKit;
 import com.dddframework.demo.domain.contract.command.UserRegisterCommand;
 import com.dddframework.demo.domain.contract.event.UserRegisterEvent;
 import com.dddframework.demo.domain.contract.query.UserQuery;
-import com.dddframework.demo.domain.user.model.User;
+import com.dddframework.demo.domain.user.model.UserModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,12 +17,12 @@ public class UserService {
      * @param userRegisterCommand
      * @return
      */
-    public User register(UserRegisterCommand userRegisterCommand) {
-        User existUser = UserQuery.builder().phone(userRegisterCommand.getPhone()).build().one();
+    public UserModel register(UserRegisterCommand userRegisterCommand) {
+        UserModel existUser = UserQuery.builder().phone(userRegisterCommand.getPhone()).build().one();
         if (existUser != null) {
             throw new ServiceException("该手机号已注册用户");
         }
-        User user = BeanKit.copy(userRegisterCommand, User.class);
+        UserModel user = BeanKit.copy(userRegisterCommand, UserModel.class);
         user.save();
         user.fill(UserQuery.builder().fillFileValues(true).build());
         new UserRegisterEvent(user).publish();

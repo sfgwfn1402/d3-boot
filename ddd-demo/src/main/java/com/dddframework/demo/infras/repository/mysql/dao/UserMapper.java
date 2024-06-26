@@ -1,7 +1,7 @@
-package com.dddframework.demo.infras.repository.dao;
+package com.dddframework.demo.infras.repository.mysql.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dddframework.demo.infras.repository.entity.UserPO;
+import com.dddframework.demo.infras.repository.mysql.entity.UserPO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
