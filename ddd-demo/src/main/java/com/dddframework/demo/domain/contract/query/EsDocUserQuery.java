@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EsIndexQuery extends Query {
+public class EsDocUserQuery extends Query {
     private String index;
 
 }

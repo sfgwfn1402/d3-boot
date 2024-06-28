@@ -1,5 +1,7 @@
 package com.dddframework.demo.domain.contract.command;
 
+import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,5 +57,18 @@ public class EsDocUserCommand {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private String createTime;
+
+    public static void main(String[] args) {
+        EsDocUserCommand command = EsDocUserCommand.builder()
+               .index("user")
+               .userId("123456")
+               .userName("张三")   // 这里的userName是String类型
+               .mobile("13800138000")
+               .age(25)
+               .grades(new BigDecimal("99.99"))
+               .createTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+               .build();
+        System.out.println(JSON.toJSONString(command));
+    }
 }

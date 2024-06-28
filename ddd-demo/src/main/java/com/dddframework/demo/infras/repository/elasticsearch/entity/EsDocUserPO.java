@@ -1,7 +1,8 @@
-package com.dddframework.demo.domain.document.model;
+package com.dddframework.demo.infras.repository.elasticsearch.entity;
 
 import com.dddframework.core.elasticsearch.contract.BaseRepository;
 import com.dddframework.core.elasticsearch.contract.Model;
+import com.dddframework.data.elasticsearch.annotation.OnUpdate;
 import com.dddframework.demo.domain.document.repository.EsDocUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,16 +11,13 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Map;
 
 /**
- * es index
+ * es PO
  */
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class EsDocUserModel extends Model {
+public class EsDocUserPO extends EsPO {
 
     /**
      * 用户ID
@@ -55,10 +53,6 @@ public class EsDocUserModel extends Model {
     /**
      * 创建时间
      */
+    @OnUpdate
     private String createTime;
-
-
-    public static EsDocUserRepository repository() {
-        return BaseRepository.of(EsDocUserModel.class);
-    }
 }

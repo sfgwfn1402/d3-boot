@@ -8,7 +8,7 @@ import java.util.Map;
  * 用户
  */
 @Data
-public class EsIndexPO extends EsPO {
+public class EsIndexUserPO extends EsPO {
     // mapping信息
     private Map<String, Object> properties;
 

@@ -2,7 +2,6 @@ package com.dddframework.demo.domain.document.service;
 
 import com.dddframework.core.utils.BeanKit;
 import com.dddframework.demo.domain.contract.command.EsDocUserCommand;
-import com.dddframework.demo.domain.contract.command.EsIndexCommand;
 import com.dddframework.demo.domain.document.model.EsDocUserModel;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;

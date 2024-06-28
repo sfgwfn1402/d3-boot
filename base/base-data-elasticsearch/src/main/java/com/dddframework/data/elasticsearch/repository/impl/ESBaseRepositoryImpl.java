@@ -2,18 +2,30 @@ package com.dddframework.data.elasticsearch.repository.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.dddframework.core.elasticsearch.context.ThreadContext;
 import com.dddframework.core.elasticsearch.contract.BaseRepository;
 import com.dddframework.core.elasticsearch.contract.Model;
 import com.dddframework.core.elasticsearch.contract.Page;
 import com.dddframework.core.elasticsearch.contract.Query;
+import com.dddframework.core.elasticsearch.contract.constant.ContextConstants;
+import com.dddframework.core.elasticsearch.utils.BeanKit;
 import com.dddframework.core.elasticsearch.utils.MappingKit;
+import com.dddframework.data.elasticsearch.annotation.*;
 import com.dddframework.data.elasticsearch.model.ElasticSearchDocModel;
 import com.dddframework.data.elasticsearch.tools.ESLambdaWrapper;
 import com.dddframework.data.elasticsearch.tools.PageUtils;
 import com.dddframework.data.elasticsearch.tools.SearchResult;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.ActionListener;
@@ -65,11 +77,19 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @Slf4j(topic = "### ES-BASE-DATA : ESBaseRepository ###")
 public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implements BaseRepository<M, Q>, Serializable {
+    private final TableScheme tableScheme;
 
     @Autowired
     private RestHighLevelClient highLevelClient;
@@ -87,6 +107,7 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
         final Class<M> modelClass = (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), 0);
         final Class<P> poClass = (Class<P>) ReflectionKit.getSuperClassGenericType(this.getClass(), 1);
         final Class<Q> queryClass = (Class<Q>) ReflectionKit.getSuperClassGenericType(this.getClass(), 2);
+        this.tableScheme = TableScheme.build(poClass);
         BaseRepository.inject(modelClass, this.getClass());
         BaseRepository.inject(queryClass, this.getClass());
         MappingKit.map("MODEL_PO", modelClass, poClass);
@@ -131,17 +152,11 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
         try {
             XContentBuilder builder = XContentFactory.jsonBuilder();
             // 注：ES 7.x 后的版本中，已经弃用 type
-            builder.startObject()
-                    .startObject("mappings")
-                    .field("properties", properties)
-                    .endObject()
-                    .startObject("settings")
+            builder.startObject().startObject("mappings").field("properties", properties).endObject().startObject("settings")
                     //分片数
                     .field("number_of_shards", DEFAULT_SHARDS)
                     //副本数
-                    .field("number_of_replicas", DEFAULT_REPLICAS)
-                    .endObject()
-                    .endObject();
+                    .field("number_of_replicas", DEFAULT_REPLICAS).endObject().endObject();
             CreateIndexRequest request = new CreateIndexRequest(index).source(builder);
             CreateIndexResponse response = highLevelClient.indices().create(request, RequestOptions.DEFAULT);
             return response.isAcknowledged();
@@ -637,9 +652,7 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
         try {
             // 批量请求
             BulkRequest bulkRequest = new BulkRequest();
-            documentList.forEach(doc -> bulkRequest.add(new IndexRequest(index)
-                    .id(doc.getId())
-                    .source(JSON.toJSONString(doc.getData()), XContentType.JSON)));
+            documentList.forEach(doc -> bulkRequest.add(new IndexRequest(index).id(doc.getId()).source(JSON.toJSONString(doc.getData()), XContentType.JSON)));
             highLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
             log.error("[ elasticsearch ] >> batchSave exception ,index = {},documentList={} ,stack={}", index, documentList, e);
@@ -677,9 +690,7 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
     public UpdateResponse updateByIdSelective(String index, String id, Object dataValue) {
         try {
             JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(dataValue));
-            UpdateRequest request = new UpdateRequest(index, id)
-                    .doc(jsonObject)
-                    .upsert(jsonObject);
+            UpdateRequest request = new UpdateRequest(index, id).doc(jsonObject).upsert(jsonObject);
             return highLevelClient.update(request, RequestOptions.DEFAULT);
         } catch (IOException e) {
             log.error("[ elasticsearch ] >> updateByIdSelective exception ,index = {},dataValue={} ,stack={}", index, dataValue, e);
@@ -885,5 +896,203 @@ public class ESBaseRepositoryImpl<M extends Model, P, Q extends Query> implement
             log.error("[ elasticsearch ] >> getByIdList exception ,index = {},idList={} ,stack={}", index, idList, e);
             throw new RuntimeException("[ elasticsearch ] >> getByIdList exception {}", e);
         }
+    }
+
+
+    private void insertFill(P po) {
+        try {
+            if (tableScheme.getTenantId() != null && ThreadContext.contains(ContextConstants.TENANT_ID)) {
+                String tenantId = ThreadContext.get(ContextConstants.TENANT_ID);
+                if (tableScheme.getTenantId().getType() == Long.class) {
+                    tableScheme.getTenantId().set(po, Long.valueOf(tenantId));
+                } else if (tableScheme.getTenantId().getType() == Integer.class) {
+                    tableScheme.getTenantId().set(po, Integer.valueOf(tenantId));
+                } else if (tableScheme.getTenantId().getType() == String.class) {
+                    tableScheme.getTenantId().set(po, tenantId);
+                }
+            }
+            if (tableScheme.getSystemId() != null && ThreadContext.contains(ContextConstants.SYSTEM_ID)) {
+                String systemId = ThreadContext.get(ContextConstants.SYSTEM_ID);
+                if (tableScheme.getSystemId().getType() == Long.class) {
+                    tableScheme.getSystemId().set(po, Long.valueOf(systemId));
+                } else if (tableScheme.getSystemId().getType() == Integer.class) {
+                    tableScheme.getSystemId().set(po, Integer.valueOf(systemId));
+                } else if (tableScheme.getSystemId().getType() == String.class) {
+                    tableScheme.getSystemId().set(po, systemId);
+                }
+            }
+            if (tableScheme.getTableLogic() != null) {
+                String defaultValue = tableScheme.getTableLogic().getAnnotation(TableLogic.class).value();
+                if (defaultValue == null || defaultValue.isEmpty()) {
+                    if (tableScheme.getTableLogic().getType().equals(Boolean.class) || tableScheme.getTableLogic().getType().equals(boolean.class)) {
+                        tableScheme.getTableLogic().set(po, false);
+                    } else if (tableScheme.getTableLogic().getType().equals(Integer.class) || tableScheme.getTableLogic().getType().equals(int.class)) {
+                        tableScheme.getTableLogic().set(po, 0);
+                    }
+                } else {
+                    if (tableScheme.getTableLogic().getType().equals(Boolean.class) || tableScheme.getTableLogic().getType().equals(boolean.class)) {
+                        tableScheme.getTableLogic().set(po, defaultValue.equals("0"));
+                    } else if (tableScheme.getTableLogic().getType().equals(Integer.class) || tableScheme.getTableLogic().getType().equals(int.class)) {
+                        tableScheme.getTableLogic().set(po, Integer.valueOf(defaultValue));
+                    }
+                }
+            }
+            for (Field onCreateField : tableScheme.getOnCreateFields()) {
+                if (onCreateField.getType().equals(LocalDateTime.class)) {
+                    onCreateField.set(po, LocalDateTime.now());
+                } else if (onCreateField.getType().equals(LocalDate.class)) {
+                    onCreateField.set(po, LocalDate.now());
+                }
+            }
+        } catch (IllegalAccessException ignore) {
+        }
+    }
+
+    private void updateFill(P po) {
+        try {
+            for (Field onUpdateField : tableScheme.getOnUpdateFields()) {
+                if (onUpdateField.getType().equals(LocalDateTime.class)) {
+                    onUpdateField.set(po, LocalDateTime.now());
+                } else if (onUpdateField.getType().equals(LocalDate.class)) {
+                    onUpdateField.set(po, LocalDate.now());
+                }
+            }
+        } catch (IllegalAccessException ignore) {
+        }
+    }
+
+    private static String replaceLast(String raw, String match, String replace) {
+        if (raw == null || raw.length() == 0 || null == replace) {
+            //参数不合法，原样返回
+            return raw;
+        }
+        StringBuilder sBuilder = new StringBuilder(raw);
+        int lastIndexOf = sBuilder.lastIndexOf(match);
+        if (-1 == lastIndexOf) {
+            return raw;
+        }
+
+        return sBuilder.replace(lastIndexOf, lastIndexOf + match.length(), replace).toString();
+    }
+
+    public static <T, S> T convert(S source) {
+        if (source == null) {
+            return null;
+        }
+        Class<T> targetClass = MappingKit.get("MODEL_PO", source.getClass());
+        return BeanKit.copy(source, targetClass);
+    }
+
+    public static <T, S> List<T> convert(List<S> source) {
+        if (source == null || source.size() == 0) {
+            return Collections.emptyList();
+        }
+        Class<T> targetClass = MappingKit.get("MODEL_PO", source.get(0).getClass());
+        return BeanKit.copy(source, targetClass);
+    }
+
+
+    @Data
+    public static class TableScheme {
+        private String tableName;
+        private Field bizKeyField;
+        private Map<String, String> field2Column;
+        private Field tenantId;
+        private Field systemId;
+        private Field tableLogic;
+        private List<Field> onCreateFields = new ArrayList<>();
+        private List<Field> onUpdateFields = new ArrayList<>();
+        private String[] defaultOrderBy;
+
+        private static final Pattern HUMP_PATTERN = Pattern.compile("[A-Z]");
+
+        /**
+         * 驼峰转下划线
+         *
+         * @return
+         * @query humpString
+         */
+        protected static String toUnderline(String humpString) {
+            if (humpString == null || humpString.isEmpty()) return humpString;
+            Matcher matcher = HUMP_PATTERN.matcher(humpString);
+            StringBuffer sb = new StringBuffer();
+            while (matcher.find()) {
+                matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
+            }
+            matcher.appendTail(sb);
+            return sb.toString();
+        }
+
+        protected boolean containsField(String field) {
+            return field2Column != null && field2Column.containsKey(field.toLowerCase());
+        }
+
+        protected String getField(String field) {
+            return field2Column.get(field.toLowerCase());
+        }
+
+        protected boolean containsColumn(String column) {
+            return field2Column != null && field2Column.containsValue(column.toLowerCase());
+        }
+
+        protected static String getColumn(Field field) {
+            TableField tableField = field.getAnnotation(TableField.class);
+            return tableField != null && tableField.value() != null && !tableField.value().isEmpty() ? tableField.value() : TableScheme.toUnderline(field.getName());
+        }
+
+        protected static TableScheme build(Class<?> poClass) {
+            if (poClass == null) {
+                return null;
+            } else {
+                TableScheme tableScheme = new TableScheme();
+//                TableName table = poClass.getAnnotation(TableName.class);
+//                if (table == null) {
+//                    throw new IllegalArgumentException("PO class must annotated with @TableName(\"table_name\")");
+//                } else {
+//                    tableScheme.setTableName(table.value());
+                    List<Field> poFields = FieldUtils.getAllFieldsList(poClass);
+                    poFields = poFields.stream().filter((p) -> !Modifier.isStatic(p.getModifiers())).collect(Collectors.toList());
+                    if (poFields.size() != 0) {
+                        tableScheme.field2Column = new HashMap<>(poFields.size());
+                        for (Field poField : poFields) {
+                            poField.setAccessible(true);
+                            String fieldName = poField.getName();
+                            // 优先读取TableField.value字段，否则把字段从驼峰式转换为下划线
+//                            TableField tableField = poField.getAnnotation(TableField.class);
+//                            String column = tableField != null && tableField.value() != null && !tableField.value().isEmpty() ? tableField.value() : TableScheme.toUnderline(fieldName);
+//                            tableScheme.field2Column.put(fieldName.toLowerCase(), column);
+                            if (poField.getAnnotation(BizKey.class) != null) {
+                                tableScheme.bizKeyField = poField;
+                            }
+                            if (poField.isAnnotationPresent(TenantId.class)) {
+                                tableScheme.tenantId = poField;
+                            }
+                            if (poField.isAnnotationPresent(SystemId.class)) {
+                                tableScheme.systemId = poField;
+                            }
+                            if (poField.isAnnotationPresent(TableLogic.class)) {
+                                tableScheme.tableLogic = poField;
+                            }
+                            if (poField.isAnnotationPresent(OnCreate.class)) {
+                                tableScheme.getOnCreateFields().add(poField);
+                            }
+                            if (poField.isAnnotationPresent(OnUpdate.class)) {
+                                tableScheme.getOnUpdateFields().add(poField);
+                            }
+                        }
+
+                    }
+                    OrderBy orderBy = poClass.getAnnotation(OrderBy.class);
+                    if (orderBy == null && poClass.getSuperclass() != null) {
+                        orderBy = poClass.getSuperclass().getAnnotation(OrderBy.class);
+                    }
+                    if (orderBy != null && orderBy.value() != null && orderBy.value().length != 0) {
+                        tableScheme.setDefaultOrderBy(orderBy.value());
+                    }
+                    return tableScheme;
+                }
+//            }
+        }
+
     }
 }

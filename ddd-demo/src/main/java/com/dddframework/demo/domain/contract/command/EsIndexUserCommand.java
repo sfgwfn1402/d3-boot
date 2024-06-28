@@ -14,7 +14,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EsIndexCommand {
+public class EsIndexUserCommand {
     // 客户昵称
     private String index;
 

@@ -4,10 +4,10 @@ import com.dddframework.core.context.ThreadContext;
 import com.dddframework.core.contract.constant.ContextConstants;
 import com.dddframework.core.utils.BizAssert;
 import com.dddframework.demo.application.service.UserAppService;
-import com.dddframework.demo.domain.contract.command.EsIndexCommand;
+import com.dddframework.demo.domain.contract.command.EsIndexUserCommand;
 import com.dddframework.demo.domain.contract.command.UserRegisterCommand;
 import com.dddframework.demo.domain.user.model.UserModel;
-import com.dddframework.demo.domain.Index.service.EsIndexService;
+import com.dddframework.demo.domain.Index.service.EsIndexUserService;
 import com.dddframework.demo.domain.user.service.UserService;
 import com.dddframework.web.api.AggregateController;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +24,10 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping({"/es_index"})
 @RequiredArgsConstructor
-public class EsIndexController implements AggregateController {
+public class EsIndexUserController implements AggregateController {
     final UserAppService userAppService;
     final UserService userService;
-    final EsIndexService esService;
+    final EsIndexUserService esService;
 
     /**
      * 创建索引
@@ -36,7 +36,7 @@ public class EsIndexController implements AggregateController {
      * @return
      */
     @PostMapping("/create_index")
-    public boolean createIndex(@Valid @RequestBody EsIndexCommand command) {
+    public boolean createIndex(@Valid @RequestBody EsIndexUserCommand command) {
         return esService.createIndex(command);
     }
 

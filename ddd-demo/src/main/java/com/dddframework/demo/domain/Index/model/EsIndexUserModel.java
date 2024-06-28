@@ -2,7 +2,7 @@ package com.dddframework.demo.domain.Index.model;
 
 import com.dddframework.core.elasticsearch.contract.BaseRepository;
 import com.dddframework.core.elasticsearch.contract.Model;
-import com.dddframework.demo.domain.Index.repository.EsIndexRepository;
+import com.dddframework.demo.domain.Index.repository.EsIndexUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,13 +17,13 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EsIndexModel extends Model {
+public class EsIndexUserModel extends Model {
 
     // mapping信息
     private Map<String, Object> properties;
 
 
-    public static EsIndexRepository repository() {
-        return BaseRepository.of(EsIndexModel.class);
+    public static EsIndexUserRepository repository() {
+        return BaseRepository.of(EsIndexUserModel.class);
     }
 }

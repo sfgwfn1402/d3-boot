@@ -1,16 +1,7 @@
 package com.dddframework.demo.api;
 
-import com.dddframework.core.context.ThreadContext;
-import com.dddframework.core.contract.constant.ContextConstants;
-import com.dddframework.core.utils.BizAssert;
-import com.dddframework.demo.application.service.UserAppService;
-import com.dddframework.demo.domain.Index.service.EsIndexService;
 import com.dddframework.demo.domain.contract.command.EsDocUserCommand;
-import com.dddframework.demo.domain.contract.command.EsIndexCommand;
-import com.dddframework.demo.domain.contract.command.UserRegisterCommand;
 import com.dddframework.demo.domain.document.service.EsDocUserService;
-import com.dddframework.demo.domain.user.model.UserModel;
-import com.dddframework.demo.domain.user.service.UserService;
 import com.dddframework.web.api.AggregateController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +17,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping({"/es_doc"})
 @RequiredArgsConstructor
-public class EsDocController implements AggregateController {
+public class EsDocUserController implements AggregateController {
     final EsDocUserService esService;
 
     /**

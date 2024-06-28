@@ -1,7 +1,7 @@
 package com.dddframework.demo.api;
 
 import com.alibaba.fastjson.JSON;
-import com.dddframework.demo.domain.contract.command.EsIndexCommand;
+import com.dddframework.demo.domain.contract.command.EsIndexUserCommand;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ class EsIndexControllerTest {
         properties.put("message", message);
         properties.put("value", value);
 
-        EsIndexCommand esic = new EsIndexCommand(index, properties);
+        EsIndexUserCommand esic = new EsIndexUserCommand(index, properties);
         System.out.println(JSON.toJSONString(esic));
     }
 }
