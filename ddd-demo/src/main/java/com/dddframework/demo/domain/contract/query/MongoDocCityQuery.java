@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MongoDocCityQuery extends Query {
+
     private Long id;
 }

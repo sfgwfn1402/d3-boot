@@ -122,11 +122,13 @@ public class MongoBaseRepositoryImpl<M extends Model, P, Q extends Query> implem
 
     @Override
     public M findById(Long id) {
-        mongoRepository.findById(id, this.getClass());
-        return null;
+        Object o = ThreadContext.get(ContextConstants.QUERY);
+        M model = convert(o, true);
+        M byId = (M) mongoRepository.findById(id, model.getClass());
+        return byId;
     }
 
-//    @Override
+    //    @Override
     public M one(Q query) {
         return null;
     }
@@ -197,10 +199,6 @@ public class MongoBaseRepositoryImpl<M extends Model, P, Q extends Query> implem
 //    public IndexResponse save(String index, String id, Object dataValue) {
 //        return this.saveOrUpdate(index, id, dataValue);
 //    }
-
-
-
-
     private void insertFill(P po) {
         try {
             if (tableScheme.getTenantId() != null && ThreadContext.contains(ContextConstants.TENANT_ID)) {
@@ -275,6 +273,21 @@ public class MongoBaseRepositoryImpl<M extends Model, P, Q extends Query> implem
         }
 
         return sBuilder.replace(lastIndexOf, lastIndexOf + match.length(), replace).toString();
+    }
+
+    /**
+     * @param source  源对象
+     * @param isQuery S是否是查询类
+     * @param <T>     模型
+     * @param <S>     源对象
+     * @return
+     */
+    public static <T, S> T convert(S source, boolean isQuery) {
+        if (source == null) {
+            return null;
+        }
+        Class<T> targetClass = MappingKit.get("MODEL_QUERY", source.getClass());
+        return BeanKit.copy(source, targetClass);
     }
 
     public static <T, S> T convert(S source) {
@@ -352,47 +365,47 @@ public class MongoBaseRepositoryImpl<M extends Model, P, Q extends Query> implem
 //                    throw new IllegalArgumentException("PO class must annotated with @TableName(\"table_name\")");
 //                } else {
 //                    tableScheme.setTableName(table.value());
-                    List<Field> poFields = FieldUtils.getAllFieldsList(poClass);
-                    poFields = poFields.stream().filter((p) -> !Modifier.isStatic(p.getModifiers())).collect(Collectors.toList());
-                    if (poFields.size() != 0) {
-                        tableScheme.field2Column = new HashMap<>(poFields.size());
-                        for (Field poField : poFields) {
-                            poField.setAccessible(true);
-                            String fieldName = poField.getName();
-                            // 优先读取TableField.value字段，否则把字段从驼峰式转换为下划线
+                List<Field> poFields = FieldUtils.getAllFieldsList(poClass);
+                poFields = poFields.stream().filter((p) -> !Modifier.isStatic(p.getModifiers())).collect(Collectors.toList());
+                if (poFields.size() != 0) {
+                    tableScheme.field2Column = new HashMap<>(poFields.size());
+                    for (Field poField : poFields) {
+                        poField.setAccessible(true);
+                        String fieldName = poField.getName();
+                        // 优先读取TableField.value字段，否则把字段从驼峰式转换为下划线
 //                            TableField tableField = poField.getAnnotation(TableField.class);
 //                            String column = tableField != null && tableField.value() != null && !tableField.value().isEmpty() ? tableField.value() : TableScheme.toUnderline(fieldName);
 //                            tableScheme.field2Column.put(fieldName.toLowerCase(), column);
-                            if (poField.getAnnotation(BizKey.class) != null) {
-                                tableScheme.bizKeyField = poField;
-                            }
-                            if (poField.isAnnotationPresent(TenantId.class)) {
-                                tableScheme.tenantId = poField;
-                            }
-                            if (poField.isAnnotationPresent(SystemId.class)) {
-                                tableScheme.systemId = poField;
-                            }
-                            if (poField.isAnnotationPresent(TableLogic.class)) {
-                                tableScheme.tableLogic = poField;
-                            }
-                            if (poField.isAnnotationPresent(OnCreate.class)) {
-                                tableScheme.getOnCreateFields().add(poField);
-                            }
-                            if (poField.isAnnotationPresent(OnUpdate.class)) {
-                                tableScheme.getOnUpdateFields().add(poField);
-                            }
+                        if (poField.getAnnotation(BizKey.class) != null) {
+                            tableScheme.bizKeyField = poField;
                         }
+                        if (poField.isAnnotationPresent(TenantId.class)) {
+                            tableScheme.tenantId = poField;
+                        }
+                        if (poField.isAnnotationPresent(SystemId.class)) {
+                            tableScheme.systemId = poField;
+                        }
+                        if (poField.isAnnotationPresent(TableLogic.class)) {
+                            tableScheme.tableLogic = poField;
+                        }
+                        if (poField.isAnnotationPresent(OnCreate.class)) {
+                            tableScheme.getOnCreateFields().add(poField);
+                        }
+                        if (poField.isAnnotationPresent(OnUpdate.class)) {
+                            tableScheme.getOnUpdateFields().add(poField);
+                        }
+                    }
 
-                    }
-                    OrderBy orderBy = poClass.getAnnotation(OrderBy.class);
-                    if (orderBy == null && poClass.getSuperclass() != null) {
-                        orderBy = poClass.getSuperclass().getAnnotation(OrderBy.class);
-                    }
-                    if (orderBy != null && orderBy.value() != null && orderBy.value().length != 0) {
-                        tableScheme.setDefaultOrderBy(orderBy.value());
-                    }
-                    return tableScheme;
                 }
+                OrderBy orderBy = poClass.getAnnotation(OrderBy.class);
+                if (orderBy == null && poClass.getSuperclass() != null) {
+                    orderBy = poClass.getSuperclass().getAnnotation(OrderBy.class);
+                }
+                if (orderBy != null && orderBy.value() != null && orderBy.value().length != 0) {
+                    tableScheme.setDefaultOrderBy(orderBy.value());
+                }
+                return tableScheme;
+            }
 //            }
         }
 

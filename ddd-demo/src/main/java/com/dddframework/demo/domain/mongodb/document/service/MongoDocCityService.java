@@ -17,7 +17,15 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 public class MongoDocCityService {
-
+    /**
+     * 根据城市ID查询城市信息
+     * @param id
+     * @return
+     */
+    public MongoDocCityModel findCityById(Long id) {
+        MongoDocCityModel existUser = MongoDocCityQuery.builder().build().findById(id);
+        return existUser;
+    }
     /**
      * 保存城市信息
      *
@@ -44,10 +52,7 @@ public class MongoDocCityService {
         return user;
     }
 
-    public MongoDocCityModel findCityById(Long id) {
-        MongoDocCityModel existUser = MongoDocCityQuery.builder().build().findById(id);
-        return existUser;
-    }
+
 
 //    public Flux<City> findAllCity() {
 //
