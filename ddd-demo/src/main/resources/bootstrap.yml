@@ -19,9 +19,18 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: test
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#集群节点
+elasticsearch:
+  nodes: 127.0.0.1:9200
 
 logging:
   level:

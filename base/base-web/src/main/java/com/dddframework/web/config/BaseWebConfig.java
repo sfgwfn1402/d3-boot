@@ -21,6 +21,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -34,6 +35,11 @@ import java.util.List;
 public class BaseWebConfig implements WebMvcConfigurer {
     final List<BaseWebInterceptor> baseWebInterceptors;
     final BaseWebProperties baseWebProperties;
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(100000L); // 设置默认超时时间为5秒
+    }
 
     @Bean
     @ConditionalOnMissingBean

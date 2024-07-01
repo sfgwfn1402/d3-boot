@@ -43,6 +43,12 @@
                 <artifactId>base-core-elasticsearch</artifactId>
                 <version>${base.version}</version>
             </dependency>
+            <!--基础核心elasticsearch组件-->
+            <dependency>
+                <groupId>com.d3framework</groupId>
+                <artifactId>base-core-mongodb</artifactId>
+                <version>${base.version}</version>
+            </dependency>
             <!--基础数据组件-->
             <dependency>
                 <groupId>com.d3framework</groupId>
@@ -53,6 +59,12 @@
             <dependency>
                 <groupId>com.d3framework</groupId>
                 <artifactId>base-data-elasticsearch</artifactId>
+                <version>${base.version}</version>
+            </dependency>
+            <!--基础数据mongodb组件-->
+            <dependency>
+                <groupId>com.d3framework</groupId>
+                <artifactId>base-data-mongodb</artifactId>
                 <version>${base.version}</version>
             </dependency>
             <!--基础MQ组件-->
@@ -375,7 +387,6 @@
                 <groupId>org.reactivestreams</groupId>
                 <artifactId>reactive-streams</artifactId>
                 <version>1.0.3</version>
-                <scope>runtime</scope>
             </dependency>
 <!--            <dependency>-->
 <!--                <groupId>org.springframework</groupId>-->
@@ -447,6 +458,17 @@
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
                 <version>${elasticsearch.version}</version>
+            </dependency>
+            <!-- ❤️Spring Boot 响应式 MongoDB 支持 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+                <version>2.5.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-mongodb</artifactId>
+                <version>2.5.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

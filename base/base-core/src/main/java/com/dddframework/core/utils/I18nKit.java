@@ -27,11 +27,14 @@ public class I18nKit {
         if (locale == null) {
             return source;
         }
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(I18N_FILE_PREFIX, locale);
-        if (resourceBundle == null || !resourceBundle.containsKey(source)) {
-            return source;
+        try {
+            ResourceBundle resourceBundle = ResourceBundle.getBundle(I18N_FILE_PREFIX, locale);
+            if (resourceBundle != null && resourceBundle.containsKey(source)) {
+                return resourceBundle.getString(source);
+            }
+        } catch (Exception ignore) {
         }
-        return resourceBundle.getString(source);
+        return source;
     }
 
     public String get(String source, Object... args) {

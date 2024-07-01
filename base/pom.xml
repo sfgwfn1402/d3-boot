@@ -11,8 +11,10 @@
         <module>base-common</module>
         <module>base-core</module>
         <module>base-core-elasticsearch</module>
+        <module>base-core-mongodb</module>
         <module>base-data</module>
         <module>base-data-elasticsearch</module>
+        <module>base-data-mongodb</module>
         <module>base-mq</module>
         <module>base-kit</module>
         <module>base-monitor</module>

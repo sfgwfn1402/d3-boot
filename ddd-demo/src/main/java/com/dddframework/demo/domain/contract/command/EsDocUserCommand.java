@@ -59,16 +59,16 @@ public class EsDocUserCommand {
      */
     private String createTime;
 
-    public static void main(String[] args) {
-        EsDocUserCommand command = EsDocUserCommand.builder()
-               .index("user")
-               .userId("123456")
-               .userName("张三")   // 这里的userName是String类型
-               .mobile("13800138000")
-               .age(25)
-               .grades(new BigDecimal("99.99"))
-               .createTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
-               .build();
-        System.out.println(JSON.toJSONString(command));
-    }
+//    public static void main(String[] args) {
+//        EsDocUserCommand command = EsDocUserCommand.builder()
+//               .index("user")
+//               .userId("123456")
+//               .userName("张三")   // 这里的userName是String类型
+//               .mobile("13800138000")
+//               .age(25)
+//               .grades(new BigDecimal("99.99"))
+//               .createTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
+//               .build();
+//        System.out.println(JSON.toJSONString(command));
+//    }
 }

@@ -2,8 +2,8 @@ package com.dddframework.demo.infras.repository.mysql.impl;
 
 import com.dddframework.data.repository.impl.BaseRepositoryImpl;
 import com.dddframework.demo.domain.contract.query.UserQuery;
-import com.dddframework.demo.domain.user.model.UserModel;
-import com.dddframework.demo.domain.user.repository.UserRepository;
+import com.dddframework.demo.domain.mysql.user.model.UserModel;
+import com.dddframework.demo.domain.mysql.user.repository.UserRepository;
 import com.dddframework.demo.infras.repository.mysql.dao.UserMapper;
 import com.dddframework.demo.infras.repository.mysql.entity.UserPO;
 import lombok.RequiredArgsConstructor;

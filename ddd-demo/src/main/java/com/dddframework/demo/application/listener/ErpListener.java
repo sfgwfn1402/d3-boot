@@ -5,7 +5,7 @@ import com.dddframework.demo.domain.contract.event.UserRegisterEvent;
 import com.dddframework.demo.domain.erp.model.ErpR;
 import com.dddframework.demo.domain.erp.model.ErpUser;
 import com.dddframework.demo.domain.erp.service.ErpFeignService;
-import com.dddframework.demo.domain.user.model.UserModel;
+import com.dddframework.demo.domain.mysql.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

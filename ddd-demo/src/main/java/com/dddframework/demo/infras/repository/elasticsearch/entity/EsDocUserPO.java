@@ -1,16 +1,10 @@
 package com.dddframework.demo.infras.repository.elasticsearch.entity;
 
-import com.dddframework.core.elasticsearch.contract.BaseRepository;
-import com.dddframework.core.elasticsearch.contract.Model;
 import com.dddframework.data.elasticsearch.annotation.OnUpdate;
-import com.dddframework.demo.domain.document.repository.EsDocUserRepository;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * es PO

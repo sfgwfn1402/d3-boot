@@ -1,7 +1,7 @@
 package com.dddframework.demo.application.service;
 
 import com.dddframework.core.utils.BizAssert;
-import com.dddframework.demo.domain.user.model.UserModel;
+import com.dddframework.demo.domain.mysql.user.model.UserModel;
 import org.springframework.stereotype.Service;
 
 @Service

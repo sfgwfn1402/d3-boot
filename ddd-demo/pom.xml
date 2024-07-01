@@ -24,6 +24,10 @@
             <groupId>com.d3framework</groupId>
             <artifactId>base-data-elasticsearch</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.d3framework</groupId>
+            <artifactId>base-data-mongodb</artifactId>
+        </dependency>
 
         <!-- 基础工具箱 -->
         <dependency>
@@ -40,6 +44,7 @@
             <groupId>com.d3framework</groupId>
             <artifactId>base-web</artifactId>
         </dependency>
+
         <!--注册中心客户端-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

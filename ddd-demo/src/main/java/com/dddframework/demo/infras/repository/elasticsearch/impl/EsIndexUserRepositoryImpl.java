@@ -1,11 +1,11 @@
 package com.dddframework.demo.infras.repository.elasticsearch.impl;
 
 import com.dddframework.data.elasticsearch.repository.impl.ESBaseRepositoryImpl;
-import com.dddframework.demo.domain.Index.model.EsIndexUserModel;
+import com.dddframework.demo.domain.elasticsearch.index.model.EsIndexUserModel;
 import com.dddframework.demo.domain.contract.query.EsIndexUserQuery;
 import com.dddframework.demo.domain.contract.query.UserQuery;
-import com.dddframework.demo.domain.user.model.UserModel;
-import com.dddframework.demo.domain.Index.repository.EsIndexUserRepository;
+import com.dddframework.demo.domain.mysql.user.model.UserModel;
+import com.dddframework.demo.domain.elasticsearch.index.repository.EsIndexUserRepository;
 import com.dddframework.demo.infras.repository.elasticsearch.entity.EsIndexUserPO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
